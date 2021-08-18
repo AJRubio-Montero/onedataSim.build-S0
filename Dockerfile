@@ -11,7 +11,8 @@ FROM centos:7.8.2003
 # 
 ARG ONECLIENT_ACCESS_TOKEN_TO_BUILD
 ARG ONECLIENT_PROVIDER_HOST_TO_BUILD
-ARG ONEDATASIM_BRANCH="master"
+ARG ONEDATASIM_BRANCH="dev-asoreyh"
+ARG CORSIKA_BRANCH="lago-corsika-77402-dev"
 
 # user credentials when the container were used
 ENV ONECLIENT_ACCESS_TOKEN=""
@@ -35,24 +36,25 @@ RUN yum -y install gcc gcc-c++ gcc-gfortran \
 #RUN curl -k -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN_TO_BUILD" \
 #               "$ONECLIENT_PROVIDER_HOST_TO_BUILD/cdmi/test4/corsika/corsika-75600-lago.tar.gz" \
 #               | tar xvz -C /opt              
-RUN while ! curl -O -C- -k -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN_TO_BUILD" \
-                 "$ONECLIENT_PROVIDER_HOST_TO_BUILD/cdmi/LAGOsoft/corsika/lago-corsika-ae38b63419f6882ca1d070b34e3f6e46a721ffe9.zip" ; \ 
-                 do true ; done
-RUN unzip ./lago-corsika-ae38b63419f6882ca1d070b34e3f6e46a721ffe9.zip  
-RUN mv lago-corsika-main/corsika-77402 /opt/corsika-77402-lago
-RUN rm -f lago-corsika-ae38b63419f6882ca1d070b34e3f6e46a721ffe9.zip
 
-RUN cd /opt/corsika-77402-lago && ./coconut-lago
+# changes by HgA to introduce working with GDAS atmospheric files
+# comment original commands 
+# RUN while ! curl -O -C- -k -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN_TO_BUILD" "$ONECLIENT_PROVIDER_HOST_TO_BUILD/cdmi/LAGOsoft/corsika/lago-corsika-ae38b63419f6882ca1d070b34e3f6e46a721ffe9.zip" ; do true ; done
+# RUN unzip ./lago-corsika-ae38b63419f6882ca1d070b34e3f6e46a721ffe9.zip  
+# RUN mv lago-corsika-main/corsika-77402 /opt/corsika-77402-lago
+# RUN rm -f lago-corsika-ae38b63419f6882ca1d070b34e3f6e46a721ffe9.zip
+# RUN cd /opt/corsika-77402-lago && ./coconut-lago	
 
-## testing corsika
-## ./corsika75600Linux_QGSII_gheisha < all-inputs > output.txt
+# and now including own changes.
+# clone corsika from git repository and install it...
 
+RUN cd /opt && git clone --branch $CORSIKA_BRANCH --recursive https://github.com/lagoproject/lago-corsika.git && mv lago-corsika/corsika-77402 corsika-77402-lago && rm -rf lago-corsika && cd corsika-77402-lago/ && ./coconut-lago-atmfile 
 
 #dowload and compile ARTI LAGO crktools
-RUN yum -y install bzip2
 # we use the ones tested with onedataSim package
 # RUN cd /opt && git clone https://github.com/lagoproject/arti.git 
 RUN cd /opt && git clone --branch $ONEDATASIM_BRANCH --recursive https://github.com/lagoproject/onedataSim.git
+
 RUN cd /opt/onedataSim/arti && make
 #set paths and permissions for onedataSim
 RUN cd /opt/onedataSim && bash install.sh 
