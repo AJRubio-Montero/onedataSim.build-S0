@@ -82,7 +82,7 @@ RUN pip install xattr
 RUN yum -y install python3 python36-pyxattr
 
 # utils for debugging
-RUN yum -y install screen nano
+RUN yum -y install screen nano vim
 
 WORKDIR /opt/corsika-77402-lago/run
 #ENTRYPOINT /opt/arti/sims/do_datahub.sh
