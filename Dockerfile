@@ -11,8 +11,9 @@ FROM centos:7.8.2003
 # 
 ARG ONECLIENT_ACCESS_TOKEN_TO_BUILD
 ARG ONECLIENT_PROVIDER_HOST_TO_BUILD
-ARG ONEDATASIM_BRANCH="dev-asoreyh"
-ARG CORSIKA_BRANCH="lago-corsika-77402-dev"
+ARG ONEDATASIM_BRANCH
+ARG CORSIKA_BRANCH
+ARG CORSIKA_TOKEN
 
 # user credentials when the container were used
 ENV ONECLIENT_ACCESS_TOKEN=""
@@ -48,7 +49,7 @@ RUN yum -y install gcc gcc-c++ gcc-gfortran \
 # and now including own changes.
 # clone corsika from git repository and install it...
 
-RUN cd /opt && git clone --branch $CORSIKA_BRANCH --recursive https://github.com/lagoproject/lago-corsika.git && mv lago-corsika/corsika-77402 corsika-77402-lago && rm -rf lago-corsika && cd corsika-77402-lago/ && ./coconut-lago-atmfile 
+RUN cd /opt && git clone --branch $CORSIKA_BRANCH --recursive https://$CORSIKA_TOKEN@github.com/lagoproject/lago-corsika.git && mv lago-corsika/corsika-77402 corsika-77402-lago && rm -rf lago-corsika && cd corsika-77402-lago/ && ./coconut-lago-atmfile 
 
 #dowload and compile ARTI LAGO crktools
 # we use the ones tested with onedataSim package
