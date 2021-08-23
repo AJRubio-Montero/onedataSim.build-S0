@@ -49,7 +49,7 @@ RUN yum -y install gcc gcc-c++ gcc-gfortran \
 # and now including own changes.
 # clone corsika from git repository and install it...
 
-RUN cd /opt && git clone --branch $CORSIKA_BRANCH --recursive https://$CORSIKA_TOKEN@github.com/lagoproject/lago-corsika.git && mv lago-corsika/corsika-77402 corsika-77402-lago && rm -rf lago-corsika && cd corsika-77402-lago/ && ./coconut-lago-atmfile 
+RUN cd /opt && echo && echo "$CORSIKA_BRANCH - $CORSIKA_TOKEN" && git clone --branch $CORSIKA_BRANCH --recursive https://$CORSIKA_TOKEN@github.com/lagoproject/lago-corsika.git && mv lago-corsika/corsika-77402 corsika-77402-lago && rm -rf lago-corsika && cd corsika-77402-lago/ && ./coconut-lago-atmfile 
 
 #dowload and compile ARTI LAGO crktools
 # we use the ones tested with onedataSim package
