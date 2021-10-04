@@ -162,8 +162,13 @@ def get_sys_args():
                         help='Enable DEBUG mode')
     #  echo -e "  -a : \
     #    Enable high energy cuts for secondaries"
-    parser.add_argument('-a', action='store_true', default=None,
-                        help='Enable high energy cuts for secondaries')
+    # added by HA - Now -a option expect the ecut value in GeV. 04/OCT/2021
+    # parser.add_argument('-a', action='store_true', default=None,
+    #                    help='Enable high energy cuts for secondaries')
+    parser.add_argument('-a', dest='a', type=int,
+                        help='Enable and set high energy cuts for secondaries')
+    #  echo -e "  -s <site> : \
+
     #  echo -e "  -k <altitude, in cm> : \
     #    Fix altitude, even for predefined sites"
     parser.add_argument('-k', dest='k', type=float,
